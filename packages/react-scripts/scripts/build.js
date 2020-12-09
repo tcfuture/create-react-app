@@ -15,7 +15,7 @@ process.env.NODE_ENV = 'production';
 // Makes the script crash on unhandled rejections instead of silently
 // ignoring them. In the future, promise rejections that are not handled will
 // terminate the Node.js process with a non-zero exit code.
-process.on('unhandledRejection', err => {
+process.on('unhandledRejection', (err) => {
   throw err;
 });
 
@@ -32,16 +32,16 @@ verifyTypeScriptSetup();
 // @remove-on-eject-end
 
 const path = require('path');
-const chalk = require('react-dev-utils/chalk');
+const chalk = require('@tcfuture/react-dev-utils/chalk');
 const fs = require('fs-extra');
 const webpack = require('webpack');
 const configFactory = require('../config/webpack.config');
 const paths = require('../config/paths');
-const checkRequiredFiles = require('react-dev-utils/checkRequiredFiles');
-const formatWebpackMessages = require('react-dev-utils/formatWebpackMessages');
-const printHostingInstructions = require('react-dev-utils/printHostingInstructions');
-const FileSizeReporter = require('react-dev-utils/FileSizeReporter');
-const printBuildError = require('react-dev-utils/printBuildError');
+const checkRequiredFiles = require('@tcfuture/react-dev-utils/checkRequiredFiles');
+const formatWebpackMessages = require('@tcfuture/react-dev-utils/formatWebpackMessages');
+const printHostingInstructions = require('@tcfuture/react-dev-utils/printHostingInstructions');
+const FileSizeReporter = require('@tcfuture/react-dev-utils/FileSizeReporter');
+const printBuildError = require('@tcfuture/react-dev-utils/printBuildError');
 
 const measureFileSizesBeforeBuild =
   FileSizeReporter.measureFileSizesBeforeBuild;
@@ -64,14 +64,14 @@ const config = configFactory('production');
 
 // We require that you explicitly set browsers and do not fall back to
 // browserslist defaults.
-const { checkBrowsers } = require('react-dev-utils/browsersHelper');
+const { checkBrowsers } = require('@tcfuture/react-dev-utils/browsersHelper');
 checkBrowsers(paths.appPath, isInteractive)
   .then(() => {
     // First, read the current file sizes in build directory.
     // This lets us display how much they changed later.
     return measureFileSizesBeforeBuild(paths.appBuild);
   })
-  .then(previousFileSizes => {
+  .then((previousFileSizes) => {
     // Remove all content but keep the directory so that
     // if you're in it, you don't end up in Trash
     fs.emptyDirSync(paths.appBuild);
@@ -121,7 +121,7 @@ checkBrowsers(paths.appPath, isInteractive)
         useYarn
       );
     },
-    err => {
+    (err) => {
       const tscCompileOnError = process.env.TSC_COMPILE_ON_ERROR === 'true';
       if (tscCompileOnError) {
         console.log(
@@ -137,7 +137,7 @@ checkBrowsers(paths.appPath, isInteractive)
       }
     }
   )
-  .catch(err => {
+  .catch((err) => {
     if (err && err.message) {
       console.log(err.message);
     }
@@ -207,7 +207,7 @@ function build(previousFileSizes) {
               'Most CI servers set it automatically.\n'
           )
         );
-        return reject(new Error(messages.warnings.join('\n\n')));
+        // return reject(new Error(messages.warnings.join('\n\n')));
       }
 
       return resolve({
@@ -222,6 +222,6 @@ function build(previousFileSizes) {
 function copyPublicFolder() {
   fs.copySync(paths.appPublic, paths.appBuild, {
     dereference: true,
-    filter: file => file !== paths.appHtml,
+    filter: (file) => file !== paths.appHtml,
   });
 }

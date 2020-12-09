@@ -8,7 +8,7 @@
 
 'use strict';
 
-const chalk = require('react-dev-utils/chalk');
+const chalk = require('@tcfuture/react-dev-utils/chalk');
 const fs = require('fs');
 const semver = require('semver');
 const path = require('path');
@@ -36,7 +36,7 @@ function verifyPackageTree() {
   const ownPackageJson = require('../../package.json');
   const expectedVersionsByDep = {};
   // Gather wanted deps
-  depsToCheck.forEach(dep => {
+  depsToCheck.forEach((dep) => {
     const expectedVersion = ownPackageJson.dependencies[dep];
     if (!expectedVersion) {
       throw new Error('This dependency list is outdated, fix it.');
@@ -62,7 +62,7 @@ function verifyPackageTree() {
     if (!fs.existsSync(maybeNodeModules)) {
       continue;
     }
-    depsToCheck.forEach(dep => {
+    depsToCheck.forEach((dep) => {
       const maybeDep = path.resolve(maybeNodeModules, dep);
       if (!fs.existsSync(maybeDep)) {
         return;

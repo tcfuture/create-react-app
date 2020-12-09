@@ -10,12 +10,12 @@
 
 const path = require('path');
 const fs = require('fs');
-const getPublicUrlOrPath = require('react-dev-utils/getPublicUrlOrPath');
+const getPublicUrlOrPath = require('@tcfuture/react-dev-utils/getPublicUrlOrPath');
 
 // Make sure any symlinks in the project folder are resolved:
 // https://github.com/facebook/create-react-app/issues/637
 const appDirectory = fs.realpathSync(process.cwd());
-const resolveApp = relativePath => path.resolve(appDirectory, relativePath);
+const resolveApp = (relativePath) => path.resolve(appDirectory, relativePath);
 
 // We use `PUBLIC_URL` environment variable or "homepage" field to infer
 // "public path" at which the app is served.
@@ -45,7 +45,7 @@ const moduleFileExtensions = [
 
 // Resolve file paths in the same order as webpack
 const resolveModule = (resolveFn, filePath) => {
-  const extension = moduleFileExtensions.find(extension =>
+  const extension = moduleFileExtensions.find((extension) =>
     fs.existsSync(resolveFn(`${filePath}.${extension}`))
   );
 
@@ -57,26 +57,28 @@ const resolveModule = (resolveFn, filePath) => {
 };
 
 // config after eject: we're in ./config/
-module.exports = {
-  dotenv: resolveApp('.env'),
-  appPath: resolveApp('.'),
-  appBuild: resolveApp('build'),
-  appPublic: resolveApp('public'),
-  appHtml: resolveApp('public/index.html'),
-  appIndexJs: resolveModule(resolveApp, 'src/index'),
-  appPackageJson: resolveApp('package.json'),
-  appSrc: resolveApp('src'),
-  appTsConfig: resolveApp('tsconfig.json'),
-  appJsConfig: resolveApp('jsconfig.json'),
-  yarnLockFile: resolveApp('yarn.lock'),
-  testsSetup: resolveModule(resolveApp, 'src/setupTests'),
-  proxySetup: resolveApp('src/setupProxy.js'),
-  appNodeModules: resolveApp('node_modules'),
-  publicUrlOrPath,
-};
+// module.exports = {
+//   dotenv: resolveApp('.env'),
+//   appPath: resolveApp('.'),
+//   appBuild: resolveApp('build'),
+//   appPublic: resolveApp('public'),
+//   appHtml: resolveApp('public/index.html'),
+//   appIndexJs: resolveModule(resolveApp, 'src/index'),
+//   appPackageJson: resolveApp('package.json'),
+//   appSrc: resolveApp('src'),
+//   appTsConfig: resolveApp('tsconfig.json'),
+//   appJsConfig: resolveApp('jsconfig.json'),
+//   yarnLockFile: resolveApp('yarn.lock'),
+//   testsSetup: resolveModule(resolveApp, 'src/setupTests'),
+//   proxySetup: resolveApp('src/setupProxy.js'),
+//   moduleFederationConfig: resolveApp('.modulerc.js'),
+//   appNodeModules: resolveApp('node_modules'),
+//   publicUrlOrPath
+// };
 
 // @remove-on-eject-begin
-const resolveOwn = relativePath => path.resolve(__dirname, '..', relativePath);
+const resolveOwn = (relativePath) =>
+  path.resolve(__dirname, '..', relativePath);
 
 // config before eject: we're in ./node_modules/react-scripts/config/
 module.exports = {
@@ -93,6 +95,7 @@ module.exports = {
   yarnLockFile: resolveApp('yarn.lock'),
   testsSetup: resolveModule(resolveApp, 'src/setupTests'),
   proxySetup: resolveApp('src/setupProxy.js'),
+  moduleFederationConfig: resolveApp('.modulerc.js'),
   appNodeModules: resolveApp('node_modules'),
   publicUrlOrPath,
   // These properties only exist before ejecting:
@@ -113,29 +116,30 @@ if (
   !reactScriptsLinked &&
   __dirname.indexOf(path.join('packages', 'react-scripts', 'config')) !== -1
 ) {
-  const templatePath = '../cra-template/template';
-  module.exports = {
-    dotenv: resolveOwn(`${templatePath}/.env`),
-    appPath: resolveApp('.'),
-    appBuild: resolveOwn('../../build'),
-    appPublic: resolveOwn(`${templatePath}/public`),
-    appHtml: resolveOwn(`${templatePath}/public/index.html`),
-    appIndexJs: resolveModule(resolveOwn, `${templatePath}/src/index`),
-    appPackageJson: resolveOwn('package.json'),
-    appSrc: resolveOwn(`${templatePath}/src`),
-    appTsConfig: resolveOwn(`${templatePath}/tsconfig.json`),
-    appJsConfig: resolveOwn(`${templatePath}/jsconfig.json`),
-    yarnLockFile: resolveOwn(`${templatePath}/yarn.lock`),
-    testsSetup: resolveModule(resolveOwn, `${templatePath}/src/setupTests`),
-    proxySetup: resolveOwn(`${templatePath}/src/setupProxy.js`),
-    appNodeModules: resolveOwn('node_modules'),
-    publicUrlOrPath,
-    // These properties only exist before ejecting:
-    ownPath: resolveOwn('.'),
-    ownNodeModules: resolveOwn('node_modules'),
-    appTypeDeclarations: resolveOwn(`${templatePath}/src/react-app-env.d.ts`),
-    ownTypeDeclarations: resolveOwn('lib/react-app.d.ts'),
-  };
+  // const templatePath = '../cra-template/template';
+  // module.exports = {
+  //   dotenv: resolveOwn(`${templatePath}/.env`),
+  //   appPath: resolveApp('.'),
+  //   appBuild: resolveOwn('../../build'),
+  //   appPublic: resolveOwn(`${templatePath}/public`),
+  //   appHtml: resolveOwn(`${templatePath}/public/index.html`),
+  //   appIndexJs: resolveModule(resolveOwn, `${templatePath}/src/index`),
+  //   appPackageJson: resolveOwn('package.json'),
+  //   appSrc: resolveOwn(`${templatePath}/src`),
+  //   appTsConfig: resolveOwn(`${templatePath}/tsconfig.json`),
+  //   appJsConfig: resolveOwn(`${templatePath}/jsconfig.json`),
+  //   yarnLockFile: resolveOwn(`${templatePath}/yarn.lock`),
+  //   testsSetup: resolveModule(resolveOwn, `${templatePath}/src/setupTests`),
+  //   proxySetup: resolveOwn(`${templatePath}/src/setupProxy.js`),
+  //   moduleFederationConfig: resolveApp('.modulerc.js'),
+  //   appNodeModules: resolveOwn('node_modules'),
+  //   publicUrlOrPath,
+  //   // These properties only exist before ejecting:
+  //   ownPath: resolveOwn('.'),
+  //   ownNodeModules: resolveOwn('node_modules'),
+  //   appTypeDeclarations: resolveOwn(`${templatePath}/src/react-app-env.d.ts`),
+  //   ownTypeDeclarations: resolveOwn('lib/react-app.d.ts')
+  // };
 }
 // @remove-on-eject-end
 

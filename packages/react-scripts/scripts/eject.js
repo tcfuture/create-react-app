@@ -10,18 +10,18 @@
 // Makes the script crash on unhandled rejections instead of silently
 // ignoring them. In the future, promise rejections that are not handled will
 // terminate the Node.js process with a non-zero exit code.
-process.on('unhandledRejection', err => {
+process.on('unhandledRejection', (err) => {
   throw err;
 });
 
 const fs = require('fs-extra');
 const path = require('path');
 const execSync = require('child_process').execSync;
-const chalk = require('react-dev-utils/chalk');
+const chalk = require('@tcfuture/react-dev-utils/chalk');
 const paths = require('../config/paths');
 const createJestConfig = require('./utils/createJestConfig');
-const inquirer = require('react-dev-utils/inquirer');
-const spawnSync = require('react-dev-utils/crossSpawn').sync;
+const inquirer = require('@tcfuture/react-dev-utils/inquirer');
+const spawnSync = require('@tcfuture/react-dev-utils/crossSpawn').sync;
 const os = require('os');
 
 const green = chalk.green;
@@ -69,7 +69,7 @@ inquirer
     message: 'Are you sure you want to eject? This action is permanent.',
     default: false,
   })
-  .then(answer => {
+  .then((answer) => {
     if (!answer.shouldEject) {
       console.log(cyan('Close one! Eject aborted.'));
       return;
@@ -84,7 +84,7 @@ inquirer
           '\n\n' +
           gitStatus
             .split('\n')
-            .map(line => line.match(/ .*/g)[0].trim())
+            .map((line) => line.match(/ .*/g)[0].trim())
             .join('\n') +
           '\n\n' +
           chalk.red(
@@ -119,9 +119,9 @@ inquirer
         fs
           .readdirSync(path.join(ownPath, folder))
           // set full path
-          .map(file => path.join(ownPath, folder, file))
+          .map((file) => path.join(ownPath, folder, file))
           // omit dirs from file list
-          .filter(file => fs.lstatSync(file).isFile())
+          .filter((file) => fs.lstatSync(file).isFile())
       );
     }, []);
 
@@ -131,7 +131,7 @@ inquirer
 
     // Prepare Jest config early in case it throws
     const jestConfig = createJestConfig(
-      filePath => path.posix.join('<rootDir>', filePath),
+      (filePath) => path.posix.join('<rootDir>', filePath),
       null,
       true
     );
@@ -139,11 +139,11 @@ inquirer
     console.log();
     console.log(cyan(`Copying files into ${appPath}`));
 
-    folders.forEach(folder => {
+    folders.forEach((folder) => {
       fs.mkdirSync(path.join(appPath, folder));
     });
 
-    files.forEach(file => {
+    files.forEach((file) => {
       let content = fs.readFileSync(file, 'utf8');
 
       // Skip flagged files
@@ -185,7 +185,7 @@ inquirer
       console.log(`  Removing ${cyan(ownPackageName)} from dependencies`);
       delete appPackage.dependencies[ownPackageName];
     }
-    Object.keys(ownPackage.dependencies).forEach(key => {
+    Object.keys(ownPackage.dependencies).forEach((key) => {
       // For some reason optionalDependencies end up in dependencies after install
       if (
         ownPackage.optionalDependencies &&
@@ -201,15 +201,15 @@ inquirer
     appPackage.dependencies = {};
     Object.keys(unsortedDependencies)
       .sort()
-      .forEach(key => {
+      .forEach((key) => {
         appPackage.dependencies[key] = unsortedDependencies[key];
       });
     console.log();
 
     console.log(cyan('Updating the scripts'));
     delete appPackage.scripts['eject'];
-    Object.keys(appPackage.scripts).forEach(key => {
-      Object.keys(ownPackage.bin).forEach(binKey => {
+    Object.keys(appPackage.scripts).forEach((key) => {
+      Object.keys(ownPackage.bin).forEach((binKey) => {
         const regex = new RegExp(binKey + ' (\\w+)', 'g');
         if (!regex.test(appPackage.scripts[key])) {
           return;
@@ -235,14 +235,14 @@ inquirer
     // Add Babel config
     console.log(`  Adding ${cyan('Babel')} preset`);
     appPackage.babel = {
-      presets: ['react-app'],
+      presets: ['babel-preset-react-app'],
     };
 
     // Add ESlint config
     if (!appPackage.eslintConfig) {
       console.log(`  Adding ${cyan('ESLint')} configuration`);
       appPackage.eslintConfig = {
-        extends: 'react-app',
+        extends: 'eslint-config-react-app',
       };
     }
 
@@ -283,7 +283,7 @@ inquirer
     if (ownPath.indexOf(appPath) === 0) {
       try {
         // remove react-scripts and react-scripts binaries from app node_modules
-        Object.keys(ownPackage.bin).forEach(binKey => {
+        Object.keys(ownPackage.bin).forEach((binKey) => {
           fs.removeSync(path.join(appPath, 'node_modules', '.bin', binKey));
         });
         fs.removeSync(ownPath);

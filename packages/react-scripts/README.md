@@ -1,4 +1,6 @@
-# react-scripts
+# @tcfuture/react-scripts
+
+[webpack 5](https://github.com/webpack/changelog-v5) + [module-federation](https://github.com/module-federation/module-federation-examples) 优化版 react-scripts
 
 This package includes scripts and configuration used by [Create React App](https://github.com/facebook/create-react-app).<br>
 Please refer to its documentation:

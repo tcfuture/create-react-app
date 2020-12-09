@@ -8,14 +8,14 @@
 
 'use strict';
 
-const chalk = require('react-dev-utils/chalk');
+const chalk = require('@tcfuture/react-dev-utils/chalk');
 const fs = require('fs');
 const resolve = require('resolve');
 const path = require('path');
 const paths = require('../../config/paths');
 const os = require('os');
-const immer = require('react-dev-utils/immer').produce;
-const globby = require('react-dev-utils/globby').sync;
+const immer = require('@tcfuture/react-dev-utils/immer').produce;
+const globby = require('@tcfuture/react-dev-utils/globby').sync;
 
 function writeJson(fileName, object) {
   fs.writeFileSync(
@@ -132,7 +132,7 @@ function verifyTypeScriptSetup() {
   };
 
   const formatDiagnosticHost = {
-    getCanonicalFileName: fileName => fileName,
+    getCanonicalFileName: (fileName) => fileName,
     getCurrentDirectory: ts.sys.getCurrentDirectory,
     getNewLine: () => os.EOL,
   };
@@ -157,7 +157,7 @@ function verifyTypeScriptSetup() {
     // Calling this function also mutates the tsconfig above,
     // adding in "include" and "exclude", but the compilerOptions remain untouched
     let result;
-    parsedTsConfig = immer(readTsConfig, config => {
+    parsedTsConfig = immer(readTsConfig, (config) => {
       result = ts.parseJsonConfigFileContent(
         config,
         ts.sys,
@@ -244,7 +244,7 @@ function verifyTypeScriptSetup() {
           'file:'
         )
       );
-      messages.forEach(message => {
+      messages.forEach((message) => {
         console.warn('  - ' + message);
       });
       console.warn();

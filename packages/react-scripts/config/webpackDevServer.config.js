@@ -9,11 +9,11 @@
 'use strict';
 
 const fs = require('fs');
-const errorOverlayMiddleware = require('react-dev-utils/errorOverlayMiddleware');
-const evalSourceMapMiddleware = require('react-dev-utils/evalSourceMapMiddleware');
-const noopServiceWorkerMiddleware = require('react-dev-utils/noopServiceWorkerMiddleware');
-const ignoredFiles = require('react-dev-utils/ignoredFiles');
-const redirectServedPath = require('react-dev-utils/redirectServedPathMiddleware');
+const errorOverlayMiddleware = require('@tcfuture/react-dev-utils/errorOverlayMiddleware');
+const evalSourceMapMiddleware = require('@tcfuture/react-dev-utils/evalSourceMapMiddleware');
+const noopServiceWorkerMiddleware = require('@tcfuture/react-dev-utils/noopServiceWorkerMiddleware');
+const ignoredFiles = require('@tcfuture/react-dev-utils/ignoredFiles');
+const redirectServedPath = require('@tcfuture/react-dev-utils/redirectServedPathMiddleware');
 const paths = require('./paths');
 const getHttpsConfig = require('./getHttpsConfig');
 
@@ -22,7 +22,7 @@ const sockHost = process.env.WDS_SOCKET_HOST;
 const sockPath = process.env.WDS_SOCKET_PATH; // default: '/sockjs-node'
 const sockPort = process.env.WDS_SOCKET_PORT;
 
-module.exports = function(proxy, allowedHost) {
+module.exports = function (proxy, allowedHost) {
   return {
     // WebpackDevServer 2.4.3 introduced a security fix that prevents remote
     // websites from potentially accessing local content through DNS rebinding:
