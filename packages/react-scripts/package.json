@@ -1,6 +1,6 @@
 {
   "name": "@tcfuture/react-scripts",
-  "version": "3.4.2-alpha.0",
+  "version": "3.4.2",
   "description": "Configuration and scripts for Create React App.",
   "publishConfig": {
     "access": "public"
@@ -33,7 +33,7 @@
   "dependencies": {
     "@babel/core": "7.9.0",
     "@svgr/webpack": "5.3.0",
-    "@tcfuture/react-dev-utils": "^10.2.8-alpha.0",
+    "@tcfuture/react-dev-utils": "^10.2.8",
     "@typescript-eslint/eslint-plugin": "^2.10.0",
     "@typescript-eslint/parser": "^2.10.0",
     "assert": "^1.1.1",

@@ -1,6 +1,6 @@
 {
   "name": "@tcfuture/react-dev-utils",
-  "version": "10.2.8-alpha.0",
+  "version": "10.2.8",
   "description": "webpack utilities used by Create React App",
   "publishConfig": {
     "access": "public"
