@@ -10,7 +10,7 @@
 // Makes the script crash on unhandled rejections instead of silently
 // ignoring them. In the future, promise rejections that are not handled will
 // terminate the Node.js process with a non-zero exit code.
-process.on('unhandledRejection', (err) => {
+process.on('unhandledRejection', err => {
   throw err;
 });
 
@@ -103,21 +103,21 @@ module.exports = function (
         'create-react-app'
       )} are no longer supported.`
     );
+    console.error(
+      `You can fix this by running ${chalk.cyan(
+        'npm uninstall -g create-react-app'
+      )} or ${chalk.cyan(
+        'yarn global remove create-react-app'
+      )} before using ${chalk.cyan('create-react-app')} again.`
+    );
     return;
   }
 
-  const templatePath = path.join(
-    require.resolve(templateName, { paths: [appPath] }),
-    '..'
+  const templatePath = path.dirname(
+    require.resolve(`${templateName}/package.json`, { paths: [appPath] })
   );
 
-  let templateJsonPath;
-  if (templateName) {
-    templateJsonPath = path.join(templatePath, 'template.json');
-  } else {
-    // TODO: Remove support for this in v4.
-    templateJsonPath = path.join(appPath, '.template.dependencies.json');
-  }
+  const templateJsonPath = path.join(templatePath, 'template.json');
 
   let templateJson = {};
   if (fs.existsSync(templateJsonPath)) {
@@ -125,6 +125,25 @@ module.exports = function (
   }
 
   const templatePackage = templateJson.package || {};
+
+  // TODO: Deprecate support for root-level `dependencies` and `scripts` in v5.
+  // These should now be set under the `package` key.
+  if (templateJson.dependencies || templateJson.scripts) {
+    console.log();
+    console.log(
+      chalk.yellow(
+        'Root-level `dependencies` and `scripts` keys in `template.json` are deprecated.\n' +
+          'This template should be updated to use the new `package` key.'
+      )
+    );
+    console.log('For more information, visit https://cra.link/templates');
+  }
+  if (templateJson.dependencies) {
+    templatePackage.dependencies = templateJson.dependencies;
+  }
+  if (templateJson.scripts) {
+    templatePackage.scripts = templateJson.scripts;
+  }
 
   // Keys to ignore in templatePackage
   const templatePackageBlacklist = [
@@ -142,7 +161,6 @@ module.exports = function (
     'man',
     'directories',
     'repository',
-    'devDependencies',
     'peerDependencies',
     'bundledDependencies',
     'optionalDependencies',
@@ -159,21 +177,18 @@ module.exports = function (
 
   // Keys from templatePackage that will be added to appPackage,
   // replacing any existing entries.
-  const templatePackageToReplace = Object.keys(templatePackage).filter(
-    (key) => {
-      return (
-        !templatePackageBlacklist.includes(key) &&
-        !templatePackageToMerge.includes(key)
-      );
-    }
-  );
+  const templatePackageToReplace = Object.keys(templatePackage).filter(key => {
+    return (
+      !templatePackageBlacklist.includes(key) &&
+      !templatePackageToMerge.includes(key)
+    );
+  });
 
   // Copy over some of the devDependencies
   appPackage.dependencies = appPackage.dependencies || {};
 
   // Setup the script rules
-  // TODO: deprecate 'scripts' key directly on templateJson
-  const templateScripts = templatePackage.scripts || templateJson.scripts || {};
+  const templateScripts = templatePackage.scripts || {};
   appPackage.scripts = Object.assign(
     {
       start: 'react-scripts start',
@@ -197,14 +212,14 @@ module.exports = function (
 
   // Setup the eslint config
   appPackage.eslintConfig = {
-    extends: 'eslint-config-react-app',
+    extends: 'react-app',
   };
 
   // Setup the browsers list
   appPackage.browserslist = defaultBrowsers;
 
   // Add templatePackage keys/values to appPackage, replacing existing entries
-  templatePackageToReplace.forEach((key) => {
+  templatePackageToReplace.forEach(key => {
     appPackage[key] = templatePackage[key];
   });
 
@@ -282,17 +297,18 @@ module.exports = function (
   } else {
     command = 'npm';
     remove = 'uninstall';
-    args = ['install', '--save', verbose && '--verbose'].filter((e) => e);
+    args = ['install', '--save', verbose && '--verbose'].filter(e => e);
   }
 
-  // Install additional template dependencies, if present
-  // TODO: deprecate 'dependencies' key directly on templateJson
-  const templateDependencies =
-    templatePackage.dependencies || templateJson.dependencies;
-  if (templateDependencies) {
+  // Install additional template dependencies, if present.
+  const dependenciesToInstall = Object.entries({
+    ...templatePackage.dependencies,
+    ...templatePackage.devDependencies,
+  });
+  if (dependenciesToInstall.length) {
     args = args.concat(
-      Object.keys(templateDependencies).map((key) => {
-        return `${key}@${templateDependencies[key]}`;
+      dependenciesToInstall.map(([dependency, version]) => {
+        return `${dependency}@${version}`;
       })
     );
   }
@@ -315,7 +331,7 @@ module.exports = function (
     }
   }
 
-  if (args.find((arg) => arg.includes('typescript'))) {
+  if (args.find(arg => arg.includes('typescript'))) {
     console.log();
     verifyTypeScriptSetup();
   }

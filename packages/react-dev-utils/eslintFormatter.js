@@ -7,15 +7,22 @@
 
 'use strict';
 
+const path = require('path');
 const chalk = require('chalk');
 const stripAnsi = require('strip-ansi');
 const table = require('text-table');
+
+const cwd = process.cwd();
 
 function isError(message) {
   if (message.fatal || message.severity === 2) {
     return true;
   }
   return false;
+}
+
+function getRelativePath(filePath) {
+  return path.relative(cwd, filePath);
 }
 
 function formatter(results) {
@@ -51,7 +58,7 @@ function formatter(results) {
         position,
         messageType,
         message.message.replace(/\.$/, ''),
-        chalk.underline(message.ruleId || '')
+        chalk.underline(message.ruleId || ''),
       ];
     });
 
@@ -70,9 +77,13 @@ function formatter(results) {
       align: ['l', 'l', 'l'],
       stringLength(str) {
         return stripAnsi(str).length;
-      }
+      },
     });
 
+    // print the filename and relative path
+    output += `${getRelativePath(result.filePath)}\n`;
+
+    // print the errors
     output += `${outputTable}\n\n`;
   });
 

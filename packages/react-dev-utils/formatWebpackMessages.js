@@ -7,8 +7,6 @@
 
 'use strict';
 
-const chalk = require('chalk');
-
 const friendlySyntaxErrorLabel = 'Syntax error:';
 
 function isLikelyASyntaxError(message) {
@@ -16,23 +14,8 @@ function isLikelyASyntaxError(message) {
 }
 
 // Cleans up webpack error messages.
-function formatMessage(messageOrMessageMetadata) {
-  let moduleName;
-  let message;
-  if (typeof messageOrMessageMetadata === 'string') {
-    message = messageOrMessageMetadata;
-  } else {
-    if (messageOrMessageMetadata.moduleName) {
-      // Clean up file name
-      moduleName = chalk.inverse(
-        messageOrMessageMetadata.moduleName.replace(/^(.*) \d+:\d+-\d+$/, '$1')
-      );
-    }
-
-    message = messageOrMessageMetadata.message;
-  }
-
-  let lines = [moduleName, ...message.split('\n')].filter(Boolean);
+function formatMessage(message) {
+  let lines = message.split('\n');
 
   // Strip webpack-added headers off errors/warnings
   // https://github.com/webpack/webpack/blob/master/lib/ModuleError.js
@@ -52,13 +35,11 @@ function formatMessage(messageOrMessageMetadata) {
   });
 
   message = lines.join('\n');
-
   // Smoosh syntax errors (commonly found in CSS)
   message = message.replace(
     /SyntaxError\s+\((\d+):(\d+)\)\s*(.+?)\n/g,
     `${friendlySyntaxErrorLabel} $3 ($1:$2)\n`
   );
-
   // Clean up export errors
   message = message.replace(
     /^.*export '(.+?)' was not found in '(.+?)'.*$/gm,
@@ -72,16 +53,14 @@ function formatMessage(messageOrMessageMetadata) {
     /^.*export '(.+?)' \(imported as '(.+?)'\) was not found in '(.+?)'.*$/gm,
     `Attempted import error: '$1' is not exported from '$3' (imported as '$2').`
   );
-
   lines = message.split('\n');
 
   // Remove leading newline
   if (lines.length > 2 && lines[1].trim() === '') {
     lines.splice(1, 1);
   }
-
-  // TODO: Fix ModuleNotFoundPlugin so its errors get formatted correctly.
-  // TODO: Fix ModuleScopePlugin so its errors get formatted correctly.
+  // Clean up file name
+  lines[0] = lines[0].replace(/^(.*) \d+:\d+-\d+$/, '$1');
 
   // Cleans up verbose "module not found" messages for files and packages.
   if (lines[1] && lines[1].indexOf('Module not found: ') === 0) {
@@ -110,15 +89,7 @@ function formatMessage(messageOrMessageMetadata) {
     ''
   ); // at ... ...:x:y
   message = message.replace(/^\s*at\s<anonymous>(\n|$)/gm, ''); // at <anonymous>
-
   lines = message.split('\n');
-
-  // Remove the require stack of a loader.
-  if (lines.find(line => line.indexOf('Require stack:') !== -1)) {
-    lines = lines.filter(
-      line => line !== 'Require stack:' && /- [.\w/-]+/.test(line) === false
-    );
-  }
 
   // Remove duplicated newlines
   lines = lines.filter(
@@ -128,23 +99,17 @@ function formatMessage(messageOrMessageMetadata) {
 
   // Reassemble the message
   message = lines.join('\n');
-
   return message.trim();
 }
 
 function formatWebpackMessages(json) {
   const formattedErrors = json.errors.map(formatMessage);
   const formattedWarnings = json.warnings.map(formatMessage);
-  const result = {
-    errors: formattedErrors,
-    warnings: formattedWarnings,
-  };
-
+  const result = { errors: formattedErrors, warnings: formattedWarnings };
   if (result.errors.some(isLikelyASyntaxError)) {
     // If there are any syntax errors, show just them.
     result.errors = result.errors.filter(isLikelyASyntaxError);
   }
-
   return result;
 }
 
