@@ -231,12 +231,13 @@ module.exports = function (webpackEnv) {
       publicPath: paths.publicUrlOrPath,
       // Point sourcemap entries to original disk location (format as URL on Windows)
       devtoolModuleFilenameTemplate: isEnvProduction
-        ? info =>
+        ? (info) =>
             path
               .relative(paths.appSrc, info.absoluteResourcePath)
               .replace(/\\/g, '/')
         : isEnvDevelopment &&
-          (info => path.resolve(info.absoluteResourcePath).replace(/\\/g, '/')),
+          ((info) =>
+            path.resolve(info.absoluteResourcePath).replace(/\\/g, '/')),
       // Prevents conflicts when multiple webpack runtimes (from different apps)
       // are used on the same page.
       // jsonpFunction: `webpackJsonp${appPackageJson.name}`,
@@ -337,58 +338,12 @@ module.exports = function (webpackEnv) {
       // `web` extension prefixes have been added for better support
       // for React Native Web.
       extensions: paths.moduleFileExtensions
-        .map(ext => `.${ext}`)
-        .filter(ext => useTypeScript || !ext.includes('ts')),
+        .map((ext) => `.${ext}`)
+        .filter((ext) => useTypeScript || !ext.includes('ts')),
       alias: {
         // Support React Native Web
         // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
         'react-native': 'react-native-web',
-
-        // Webpack 5 Change: Polyfill Node bindings.
-        // See https://github.com/webpack/webpack/pull/8460
-        // See https://github.com/webpack/node-libs-browser/blob/master/index.js
-        assert: 'assert',
-        buffer: 'buffer',
-        child_process: path.resolve(path.join(__dirname, 'mocks/empty')),
-        cluster: path.resolve(path.join(__dirname, 'mocks/empty')),
-        console: 'console-browserify',
-        constants: 'constants-browserify',
-        crypto: 'crypto-browserify',
-        dgram: path.resolve(path.join(__dirname, 'mocks/empty')),
-        // dns: 'mock'
-        // See https://github.com/webpack/node-libs-browser/blob/master/mock/dns.js
-        dns: path.resolve(path.join(__dirname, 'mocks/dns')),
-        domain: 'domain-browser',
-        events: 'events',
-        fs: path.resolve(path.join(__dirname, 'mocks/empty')),
-        http: 'stream-http',
-        http2: path.resolve(path.join(__dirname, 'mocks/empty')),
-        https: 'https-browserify',
-        module: path.resolve(path.join(__dirname, 'mocks/empty')),
-        net: path.resolve(path.join(__dirname, 'mocks/empty')),
-        os: 'os-browserify/browser.js',
-        path: 'path-browserify',
-        punycode: 'punycode',
-        process: 'process/browser.js',
-        querystring: 'querystring-es3',
-        readline: path.resolve(path.join(__dirname, 'mocks/empty')),
-        repl: path.resolve(path.join(__dirname, 'mocks/empty')),
-        stream: 'stream-browserify',
-        _stream_duplex: 'readable-stream/duplex.js',
-        _stream_passthrough: 'readable-stream/passthrough.js',
-        _stream_readable: 'readable-stream/readable.js',
-        _stream_transform: 'readable-stream/transform.js',
-        _stream_writable: 'readable-stream/writable.js',
-        string_decoder: 'string_decoder',
-        sys: 'util/util.js',
-        timers: 'timers-browserify',
-        tls: path.resolve(path.join(__dirname, 'mocks/empty')),
-        tty: 'tty-browserify',
-        url: 'url',
-        util: 'util/util.js',
-        vm: 'vm-browserify',
-        zlib: 'browserify-zlib',
-
         // Allows for better profiling with ReactDevTools
         ...(isEnvProductionProfile && {
           'react-dom$': 'react-dom/profiling',
@@ -750,7 +705,7 @@ module.exports = function (webpackEnv) {
             return manifest;
           }, seed);
           const entrypointFiles = entrypoints.main.filter(
-            fileName => !fileName.endsWith('.map')
+            (fileName) => !fileName.endsWith('.map')
           );
 
           return {
@@ -817,7 +772,7 @@ module.exports = function (webpackEnv) {
       new ESLintPlugin({
         // Plugin options
         extensions: ['js', 'mjs', 'jsx', 'ts', 'tsx'],
-        formatter: require.resolve('react-dev-utils/eslintFormatter'),
+        formatter: require.resolve('@tcfuture/react-dev-utils/eslintFormatter'),
         eslintPath: require.resolve('eslint'),
         context: paths.appSrc,
         cache: true,
@@ -838,20 +793,18 @@ module.exports = function (webpackEnv) {
         },
       }),
     ].filter(Boolean),
-    // Webpack 5 Change: Do not polyfill node bindings by default.
-    // See https://github.com/webpack/webpack/pull/8460
     // Some libraries import Node modules but don't use them in the browser.
     // Tell webpack to provide empty mocks for them so importing them works.
-    // node: {
-    //   module: 'empty',
-    //   dgram: 'empty',
-    //   dns: 'mock',
-    //   fs: 'empty',
-    //   http2: 'empty',
-    //   net: 'empty',
-    //   tls: 'empty',
-    //   child_process: 'empty',
-    // },
+    node: {
+      module: 'empty',
+      dgram: 'empty',
+      dns: 'mock',
+      fs: 'empty',
+      http2: 'empty',
+      net: 'empty',
+      tls: 'empty',
+      child_process: 'empty',
+    },
     // Turn off performance processing because we utilize
     // our own hints via the FileSizeReporter
     performance: false,
