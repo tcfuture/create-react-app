@@ -1,6 +1,6 @@
 {
   "name": "@tcfuture/react-scripts",
-  "version": "4.0.2-beta.1",
+  "version": "4.0.2-beta.2",
   "description": "Configuration and scripts for Create React App.",
   "repository": {
     "type": "git",
@@ -31,7 +31,7 @@
     "@babel/core": "7.12.3",
     "@pmmmwh/react-refresh-webpack-plugin": "0.4.2",
     "@svgr/webpack": "5.5.0",
-    "@tcfuture/react-dev-utils": "^11.0.2-beta.1",
+    "@tcfuture/react-dev-utils": "^11.0.2-beta.2",
     "@typescript-eslint/eslint-plugin": "^4.5.0",
     "@typescript-eslint/parser": "^4.5.0",
     "babel-eslint": "^10.1.0",
@@ -113,5 +113,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "gitHead": "0931210625320d15e96735f6e20a8166c54360ff"
 }

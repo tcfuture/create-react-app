@@ -1,6 +1,6 @@
 {
   "name": "@tcfuture/react-dev-utils",
-  "version": "11.0.2-beta.1",
+  "version": "11.0.2-beta.2",
   "description": "webpack utilities used by Create React App",
   "repository": {
     "type": "git",
@@ -83,5 +83,6 @@
   },
   "scripts": {
     "test": "cross-env FORCE_COLOR=true jest"
-  }
+  },
+  "gitHead": "0931210625320d15e96735f6e20a8166c54360ff"
 }
